@@ -17,10 +17,13 @@ public class Player extends Item{
     private int direction;
     private int speed;
     private Game game;
+    private float an;
     
     public Player(int x, int y, int width, int height, Game game) {
         super(x, y, width, height);
         this.game = game;
+        this.speed = 1;
+        an = 0;
     }
 
     public int getDirection() {
@@ -32,21 +35,24 @@ public class Player extends Item{
     }
     
     public void moveForward(float angle) {
-        x += speed * math.sin(angle);
-        y += speed * math.cos(angle);
+        setX((int) (getX() + speed * Math.cos(angle)));
+        setY((int) (getY() + speed * Math.sin(angle)));
     }
 
     @Override
     public void tick() {
         // moving player depending on keys <- ->
         if (game.getKeyManager().left) {
-           setX(getX() - 7);
+          // setX(getX() - 7);
+           an++;
         }
         if (game.getKeyManager().right) {
-           setX(getX() + 7);
+          // setX(getX() + 7);
+           an--;
         }
         if (game.getKeyManager().up) {
-           setY(getY() - 7);
+           //setY(getY() - 7);
+           moveForward(720);
         }
         if (game.getKeyManager().down) {
            setY(getY() + 7);
