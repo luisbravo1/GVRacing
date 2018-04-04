@@ -35,8 +35,8 @@ public class Player extends Item{
     }
     
     public void moveForward(float angle) {
-        setX((int) (getX() + speed * Math.cos(angle)));
-        setY((int) (getY() + speed * Math.sin(angle)));
+        setX((int) (getX() + speed * Math.sin(angle)));
+        setY((int) (getY() + speed * Math.cos(angle)));
     }
 
     @Override
