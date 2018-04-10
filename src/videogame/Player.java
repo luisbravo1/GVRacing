@@ -10,7 +10,7 @@ import java.awt.Graphics;
 
 /**
  *
- * @author GoodVibesOnly
+ * @authors team : GoodVibesOnly
  */
 public class Player extends Item{
 
@@ -50,7 +50,7 @@ public class Player extends Item{
             if (game.getKeyManager().down) {
                setY(getY() + 7);
             }
-        } else {
+        } else if (numPlayer == 2) {
             if (game.getKeyManager().a) {
               setX(getX() - 7);
             }
