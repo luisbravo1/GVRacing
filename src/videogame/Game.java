@@ -28,7 +28,8 @@ public class Game implements Runnable {
     private Thread thread;          // thread to create the game
     private boolean running;        // to set the game
     private boolean started;        // to set the start
-    private Player player1;          // to use a player
+    private Player player1;          // to use a player 1
+    private Player player2;         // to use a player 2
     private KeyManager keyManager;  // to manage the keyboard
 
     
@@ -77,7 +78,8 @@ public class Game implements Runnable {
          display = new Display(title, getWidth(), getHeight());  
          Assets.init();
          display.getJframe().addKeyListener(keyManager);
-         player1 = new Player(350, 50, 50, 80, this);
+         player1 = new Player(350, 50, 50, 80, 1, this);
+         player2 = new Player(350, 130, 50, 80, 2, this);
     }
     
     @Override
@@ -125,6 +127,7 @@ public class Game implements Runnable {
     private void tick() {
         keyManager.tick();
         player1.tick();
+        player2.tick();
     }
     
     private void render() {
@@ -144,6 +147,7 @@ public class Game implements Runnable {
             g = bs.getDrawGraphics();
             g.drawImage(Assets.background, 0, 0, width, height, null);
             player1.render(g);
+            player2.render(g);
             bs.show();
             g.dispose();
         }

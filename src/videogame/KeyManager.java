@@ -18,6 +18,10 @@ public class KeyManager implements KeyListener {
     public boolean down;    // flag to move down the player
     public boolean left;    // flag to move left the player
     public boolean right;   // flag to move right the player
+    public boolean w;       // flag to move up the player
+    public boolean a;       // flag to move left the player
+    public boolean s;       // flag to move down the player
+    public boolean d;       // flag to move right the player
     public boolean space;    // flag to space
     public boolean pause;   // flag to pause the game
 
@@ -61,6 +65,10 @@ public class KeyManager implements KeyListener {
         down = keys[KeyEvent.VK_DOWN];
         left = keys[KeyEvent.VK_LEFT];
         right = keys[KeyEvent.VK_RIGHT];
+        w = keys[KeyEvent.VK_W];
+        a = keys[KeyEvent.VK_A];
+        s = keys[KeyEvent.VK_S];
+        d = keys[KeyEvent.VK_D];
         space = keys[KeyEvent.VK_SPACE];
         pause = keys[KeyEvent.VK_P];
     }
