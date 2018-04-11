@@ -14,10 +14,10 @@ import java.awt.Graphics;
  */
 public class Player extends Item{
 
-    private int direction;
-    private int speed;
-    private int numPlayer;
-    private Game game;
+    private int direction;      // to set the direction
+    private int speed;          // to set the speed
+    private int numPlayer;      // to set the player number
+    private Game game;          // to use game
     
     public Player(int x, int y, int width, int height, int numPlayer, Game game) {
         super(x, y, width, height);
@@ -26,10 +26,18 @@ public class Player extends Item{
         this.numPlayer = numPlayer;
     }
 
+    /**
+     * To get direction
+     * @return an <code>int</code> value determining direction
+     */
     public int getDirection() {
         return direction;
     }
-
+    
+    /**
+     * To set direction
+     * @param direction  
+     */
     public void setDirection(int direction) {
         this.direction = direction;
     }
@@ -37,6 +45,7 @@ public class Player extends Item{
     @Override
     public void tick() {
         // moving player depending on keys <- ->
+        // and depending on what player number
         if (numPlayer == 1) {
             if (game.getKeyManager().left) {
               setX(getX() - 7);

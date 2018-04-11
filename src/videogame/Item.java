@@ -79,14 +79,21 @@ public abstract class Item {
         this.y = y;
     }
 
+    /**
+     * Set Width value
+     * @param width to modify
+     */
     public void setWidth(int width) {
         this.width = width;
     }
 
+    /**
+     * Set Height value
+     * @param height to modify
+     */
     public void setHeight(int height) {
         this.height = height;
     }
-    
     
     /**
      * To update positions of the item for every tick
@@ -99,10 +106,19 @@ public abstract class Item {
      */
     public abstract void render(Graphics g);
     
+    /**
+     * To get the bounds of an item
+     * @return 
+     */
     private Rectangle getBounds() {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
     
+    /**
+     * To check if an item intersects another item
+     * @param obj this object
+     * @return a <code>boolean</code> true if item intersects another item
+     */
     public boolean intersects(Object obj) {
         return (obj instanceof Item && this.getBounds().intersects(((Item) obj).getBounds()));
     }

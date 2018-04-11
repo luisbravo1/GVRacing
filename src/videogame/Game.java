@@ -28,7 +28,7 @@ public class Game implements Runnable {
     private Thread thread;          // thread to create the game
     private boolean running;        // to set the game
     private boolean started;        // to set the start
-    private Player player1;          // to use a player 1
+    private Player player1;         // to use a player 1
     private Player player2;         // to use a player 2
     private KeyManager keyManager;  // to manage the keyboard
 
@@ -63,12 +63,28 @@ public class Game implements Runnable {
         return height;
     }
 
+    /**
+     * To know if the game has started
+     * @return a <code>boolean</code> true is the game has started
+     */
     public boolean isStarted() {
         return started;
     }
 
+    /**
+     * To set if the game has started
+     * @param started 
+     */
     public void setStarted(boolean started) {
         this.started = started;
+    }
+    
+    /**
+     * To get KeyManager
+     * @return 
+     */
+    public KeyManager getKeyManager() {
+        return keyManager;
     }
     
     /**
@@ -119,17 +135,19 @@ public class Game implements Runnable {
         }
         stop();
     }
-
-    public KeyManager getKeyManager() {
-        return keyManager;
-    }
     
+    /**
+     * To update the game in every tick
+     */
     private void tick() {
         keyManager.tick();
         player1.tick();
         player2.tick();
     }
     
+    /**
+     * To render the game
+     */
     private void render() {
         // get the buffer strategy from the display
         bs = display.getCanvas().getBufferStrategy();
@@ -155,7 +173,7 @@ public class Game implements Runnable {
     }
     
     /**
-     * setting the thead for the game
+     * setting the thread for the game
      */
     public synchronized void start() {
         if (!running) {
