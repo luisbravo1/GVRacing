@@ -19,7 +19,7 @@ public class Assets {
      * initializing the images of the game
      */
     public static void init() {
-        background = ImageLoader.loadImage("/images/racetrack.jpeg");
+        background = ImageLoader.loadImage("/images/track1.jpeg");
         // Assign different cars available
         car = new BufferedImage[5];
         car[0] = ImageLoader.loadImage("/images/car_blue_1.png");
