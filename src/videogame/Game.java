@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 import javax.swing.Timer;
 
@@ -25,12 +26,17 @@ public class Game implements Runnable {
     String title;                   // title of the window
     private int width;              // width of the window
     private int height;             // height of the window
+    private int posX;               // to store random posX of cars
+    private int posX2;              // to store random posX of cars
     private Thread thread;          // thread to create the game
     private boolean running;        // to set the game
     private boolean started;        // to set the start
-    private Player player1;         // to use a player 1
-    private Player player2;         // to use a player 2
+    private Player player;          // to use a player 
     private KeyManager keyManager;  // to manage the keyboard
+    private ArrayList<Obstacle> obstacles;   // to store obstacles collection
+    private ArrayList<Obstacle> background;     // to store background collection
+    
+    private int BGpos;
 
     
     /**
@@ -45,6 +51,7 @@ public class Game implements Runnable {
         this.height = height;
         running = false;
         keyManager = new KeyManager();
+        BGpos = 0;
     }
 
     /**
@@ -94,15 +101,23 @@ public class Game implements Runnable {
          display = new Display(title, getWidth(), getHeight());  
          Assets.init();
          display.getJframe().addKeyListener(keyManager);
-         player1 = new Player(350, 50, 50, 80, 1, this);
-         player2 = new Player(350, 130, 50, 80, 2, this);
+         player = new Player(getWidth()/2, getHeight(), 50, 90, this);
+         
+        // create the Array collection of cars
+        obstacles = new ArrayList<Obstacle>();
+        // adding enemies to the collection
+        for (int i = 1; i <= 6; i++) {
+            posX = ((int) (Math.random() * (getWidth()/4 + 150)));
+            obstacles.add(new Obstacle(posX + 400, 200*i-900, 50, 90, ((int) (Math.random() * 4) + 1), this));
+        }
+ 
     }
     
     @Override
     public void run() {
         init();
         // frames per second
-        int fps = 50;
+        int fps = 60;
         // time for each tick in nano segs
         double timeTick = 1000000000 / fps;
         // initializing delta
@@ -130,6 +145,10 @@ public class Game implements Runnable {
                 }
                 
                 render();
+                BGpos += 8;
+                if (BGpos > getHeight()) {
+                    BGpos = 0;
+                }
                 delta --;
             }
         }
@@ -141,8 +160,20 @@ public class Game implements Runnable {
      */
     private void tick() {
         keyManager.tick();
-        player1.tick();
-        player2.tick();
+        player.tick();
+        // moving the enemies
+        Iterator itr = obstacles.iterator();
+        while (itr.hasNext()) {
+            Obstacle obstacles = (Obstacle) itr.next();
+            obstacles.tick();
+            // re set positions if getting out of the screen
+            if (obstacles.getY() > 780) {
+                posX2 = ((int) (Math.random() * getWidth()/4 + 100));
+                obstacles.setX(posX2 + 400);
+                obstacles.setY(-300);
+                obstacles.setColor((int) (Math.random() * 4) + 1);
+            }
+        }
     }
     
     /**
@@ -163,9 +194,16 @@ public class Game implements Runnable {
         else
         {
             g = bs.getDrawGraphics();
-            g.drawImage(Assets.background, 0, 0, width, height, null);
-            player1.render(g);
-            player2.render(g);
+
+            g.drawImage(Assets.background, 0, BGpos, width, height, null);
+            g.drawImage(Assets.background, 0, BGpos - getHeight(), width, height, null);
+            player.render(g);
+            // render enemies
+            Iterator itr = obstacles.iterator();
+            while (itr.hasNext()) {
+                Obstacle obstacles = (Obstacle) itr.next();
+                obstacles.render(g);
+            }
             bs.show();
             g.dispose();
         }
