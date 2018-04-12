@@ -101,7 +101,7 @@ public class Game implements Runnable {
          display = new Display(title, getWidth(), getHeight());  
          Assets.init();
          display.getJframe().addKeyListener(keyManager);
-         player = new Player(getWidth()/2, getHeight(), 50, 90, this);
+         player = new Player(getWidth()/2, getHeight() - 200, 50, 90, this);
          
         // create the Array collection of cars
         obstacles = new ArrayList<Obstacle>();
