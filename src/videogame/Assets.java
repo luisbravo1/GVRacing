@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 public class Assets {
     public static BufferedImage background; // to store background image
     public static BufferedImage car[];     // to store the cars images
+    public static BufferedImage player; // to store the player image
 
     /**
      * initializing the images of the game
@@ -27,6 +28,7 @@ public class Assets {
         car[2] = ImageLoader.loadImage("/images/car_red_3.png");
         car[3] = ImageLoader.loadImage("/images/car_yellow_4.png");
         car[4] = ImageLoader.loadImage("/images/motorcycle_black.png");
+        player = ImageLoader.loadImage("/images/character_black_red.png");
     }
     
 }

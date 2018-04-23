@@ -6,6 +6,7 @@
 package videogame;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 /**
  *
@@ -20,8 +21,16 @@ public class Obstacle extends Item{
     public Obstacle(int x, int y, int width, int height, int color, Game game) {
         super(x, y, width, height);
         this.game = game;
-        this.speed = 1;
+        this.speed = 8;
         this.color = color;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 
     /**
@@ -42,7 +51,7 @@ public class Obstacle extends Item{
     
     @Override
     public void tick() {
-        setY(getY() + 8);
+        setY(getY() + speed);
        
         // reset x position if collision with walls
         if (getX() + 100 >= game.getWidth()) {
@@ -57,5 +66,9 @@ public class Obstacle extends Item{
     @Override
     public void render(Graphics g) {
         g.drawImage(Assets.car[color], getX(), getY(), getWidth(), getHeight(), null);
+    }
+    
+    public BufferedImage getSprite() {
+        return Assets.car[color];
     }
 }

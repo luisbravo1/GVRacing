@@ -7,6 +7,7 @@ package videogame;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 /**
  *
@@ -17,12 +18,16 @@ public class Player extends Item{
     private int direction;      // to set the direction
     private int speed;          // to set the speed
     private Game game;          // to use game
+    private BufferedImage Car;       // to have a car 
+    private int speedY;         // speed Y
     
     public Player(int x, int y, int width, int height, Game game) {
         super(x, y, width, height);
         this.game = game;
         this.speed = 1;
     }
+    
+   
 
     /**
      * To get direction
@@ -31,6 +36,16 @@ public class Player extends Item{
     public int getDirection() {
         return direction;
     }
+
+    public BufferedImage getCar() {
+        return Car;
+    }
+
+    public void setCar(BufferedImage Car) {
+        this.Car = Car;
+    }
+    
+    
     
     /**
      * To set direction
@@ -42,12 +57,27 @@ public class Player extends Item{
     
     @Override
     public void tick() {
+        
+        
+        
+        
         // moving player depending on keys <- ->
         if (game.getKeyManager().left) {
           setX(getX() - 7);
         }
         if (game.getKeyManager().right) {
           setX(getX() + 7);
+        }
+        
+        if (getCar() == null) {
+            // moving player depending on keys <- ->
+           if (game.getKeyManager().up) {
+             setY(getY() - 7);
+           }
+           if (game.getKeyManager().down) {
+             setY(getY() + 7);
+           }
+
         }
         
         // reset x position if collision with walls
@@ -69,6 +99,10 @@ public class Player extends Item{
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(Assets.car[0], getX(), getY(), getWidth(), getHeight(), null);
+        if (getCar() == null) {
+            g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
+        } else {
+            g.drawImage(Car, getX(), getY(), 50, 90, null);
+        }
     }
 }
