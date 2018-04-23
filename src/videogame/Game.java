@@ -36,6 +36,8 @@ public class Game implements Runnable {
     private ArrayList<Obstacle> obstacles;   // to store obstacles collection
     private ArrayList<Obstacle> background;     // to store background collection
     
+    private int speed;
+    
     private int BGpos;
 
     
@@ -52,7 +54,23 @@ public class Game implements Runnable {
         running = false;
         keyManager = new KeyManager();
         BGpos = 0;
+        this.speed = 8;
     }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+        Iterator itr = obstacles.iterator();
+        while (itr.hasNext()) {
+            Obstacle obstacles = (Obstacle) itr.next();
+            obstacles.setSpeed(speed);
+        }       
+    }
+    
+    
 
     /**
      * To get the width of the game window
@@ -101,7 +119,7 @@ public class Game implements Runnable {
          display = new Display(title, getWidth(), getHeight());  
          Assets.init();
          display.getJframe().addKeyListener(keyManager);
-         player = new Player(getWidth()/2, getHeight() - 200, 50, 90, this);
+         player = new Player(getWidth()/2, getHeight() - 200, 40, 30, this);
          
         // create the Array collection of cars
         obstacles = new ArrayList<Obstacle>();
@@ -145,7 +163,7 @@ public class Game implements Runnable {
                 }
                 
                 render();
-                BGpos += 8;
+                BGpos += speed;
                 if (BGpos > getHeight()) {
                     BGpos = 0;
                 }
@@ -161,11 +179,29 @@ public class Game implements Runnable {
     private void tick() {
         keyManager.tick();
         player.tick();
+ 
         // moving the enemies
         Iterator itr = obstacles.iterator();
         while (itr.hasNext()) {
             Obstacle obstacles = (Obstacle) itr.next();
             obstacles.tick();
+            if (obstacles.intersects(player)) {
+                setSpeed(0);                    
+ 
+                 if (keyManager.space) {
+                    if (player.getCar() == null) {
+                        player.setCar(obstacles.getSprite());
+
+                        obstacles.setX(((int) (Math.random() * getWidth()/4 + 100)) + 400);
+                        obstacles.setY(-300);
+                        setSpeed(8);
+                     } else if (player.getCar() != null ) {
+                        player.setCar(null);
+                    }
+                }
+                 
+               // setSpeed(0);
+            }
             // re set positions if getting out of the screen
             if (obstacles.getY() > 780) {
                 posX2 = ((int) (Math.random() * getWidth()/4 + 100));
