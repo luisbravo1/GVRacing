@@ -35,7 +35,6 @@ public class Game implements Runnable {
     private KeyManager keyManager;  // to manage the keyboard
     private ArrayList<Obstacle> obstacles;   // to store obstacles collection
     private ArrayList<Obstacle> background;     // to store background collection
-    private int lol;
     
     private int speed;
     
