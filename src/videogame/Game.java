@@ -36,6 +36,7 @@ public class Game implements Runnable {
     private ArrayList<Obstacle> obstacles;   // to store obstacles collection
     private ArrayList<Obstacle> background;     // to store background collection
     private ParticleSystem explosions;       // to store explosions
+    public SoundClip crash;        // to store crash sounds
     
     private int speed;
     
@@ -56,6 +57,7 @@ public class Game implements Runnable {
         keyManager = new KeyManager();
         BGpos = 0;
         this.speed = 8;
+        crash = new SoundClip("/sound/crash.wav");
     }
 
     public int getSpeed() {
