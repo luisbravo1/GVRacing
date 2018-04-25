@@ -35,6 +35,7 @@ public class Game implements Runnable {
     private KeyManager keyManager;  // to manage the keyboard
     private ArrayList<Obstacle> obstacles;   // to store obstacles collection
     private ArrayList<Obstacle> background;     // to store background collection
+    private ParticleSystem explosions;       // to store explosions
     
     private int speed;
     
@@ -62,12 +63,15 @@ public class Game implements Runnable {
     }
 
     public void setSpeed(int speed) {
-        this.speed = speed;
-        Iterator itr = obstacles.iterator();
-        while (itr.hasNext()) {
-            Obstacle obstacles = (Obstacle) itr.next();
-            obstacles.setSpeed(speed);
-        }       
+        this.speed = speed;     
+    }
+
+    public ParticleSystem getExplosions() {
+        return explosions;
+    }
+
+    public void setExplosions(ParticleSystem explosions) {
+        this.explosions = explosions;
     }
     
     
@@ -125,9 +129,11 @@ public class Game implements Runnable {
         obstacles = new ArrayList<Obstacle>();
         // adding enemies to the collection
         for (int i = 1; i <= 6; i++) {
-            posX = ((int) (Math.random() * (getWidth()/4 + 150)));
-            obstacles.add(new Obstacle(posX + 400, 200*i-900, 50, 90, ((int) (Math.random() * 4) + 1), this));
+            posX = ((int) (Math.random() * (getWidth())));
+            obstacles.add(new Obstacle(posX, 200*i-900, 50, 90, ((int) (Math.random() * 4) + 1), this));
         }
+        
+        explosions = new ParticleSystem(Assets.explosion,this,100,100);
  
     }
     
@@ -163,7 +169,7 @@ public class Game implements Runnable {
                 }
                 
                 render();
-                BGpos += speed;
+                BGpos += getSpeed();
                 if (BGpos > getHeight()) {
                     BGpos = 0;
                 }
@@ -177,39 +183,50 @@ public class Game implements Runnable {
      * To update the game in every tick
      */
     private void tick() {
+        
         keyManager.tick();
+        
         player.tick();
- 
+        
+        explosions.tick();
+        
+        setSpeed(player.getSpeedY());
         // moving the enemies
         Iterator itr = obstacles.iterator();
         while (itr.hasNext()) {
             Obstacle obstacles = (Obstacle) itr.next();
             obstacles.tick();
             if (obstacles.intersects(player)) {
-                setSpeed(0);                    
- 
+                player.setSpeedY(0);                    
+                obstacles.setSpeed(0);
                  if (keyManager.space) {
-                    if (player.getCar() == null) {
-                        player.setCar(obstacles.getSprite());
-
+                    if (player.getColor() == -1) {
+                        player.setColor(obstacles.getColor());
+                        
                         obstacles.setX(((int) (Math.random() * getWidth()/4 + 100)) + 400);
                         obstacles.setY(-300);
-                        setSpeed(8);
-                     } else if (player.getCar() != null ) {
-                        player.setCar(null);
-                    }
-                }
+                        obstacles.setSpeed(6);
+                        
+                     }
+                    
+                } else if (player.getColor() != -1) {
+                     player.setColor(-1); 
+                     explosions.SpawnParticle(player.getX(),player.getY());
+                 }
                  
                // setSpeed(0);
             }
             // re set positions if getting out of the screen
             if (obstacles.getY() > 780) {
-                posX2 = ((int) (Math.random() * getWidth()/4 + 100));
-                obstacles.setX(posX2 + 400);
+                posX2 = ((int) (Math.random() * getWidth()));
+                obstacles.setX(posX2);
                 obstacles.setY(-300);
                 obstacles.setColor((int) (Math.random() * 4) + 1);
+                obstacles.setSpeed(6);
             }
         }
+
+
     }
     
     /**
@@ -240,6 +257,8 @@ public class Game implements Runnable {
                 Obstacle obstacles = (Obstacle) itr.next();
                 obstacles.render(g);
             }
+            explosions.render(g);
+            
             bs.show();
             g.dispose();
         }

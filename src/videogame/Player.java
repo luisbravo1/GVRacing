@@ -18,7 +18,7 @@ public class Player extends Item{
     private int direction;      // to set the direction
     private int speed;          // to set the speed
     private Game game;          // to use game
-    private BufferedImage Car;       // to have a car 
+    private int color;      // to get the type of car
     private int speedY;         // speed Y
     private int maxSpeed;
     
@@ -27,6 +27,7 @@ public class Player extends Item{
         this.game = game;
         this.speed = 1;
         maxSpeed = 5;
+        color = -1;
     }
 
     public int getSpeedY() {
@@ -47,14 +48,17 @@ public class Player extends Item{
         return direction;
     }
 
-    public BufferedImage getCar() {
-        return Car;
+    public int getColor() {
+        return color;
     }
 
-    public void setCar(BufferedImage Car) {
-        this.Car = Car;
-        if (Car == null) {
-          setMaxSpeed(5);  
+    public void setColor(int color) {
+        this.color = color;
+        
+        if (color == -1) {
+          setMaxSpeed(5);
+          setSpeedY(2);
+          game.getExplosions().SpawnParticle(getX(), getY());
         } else {
           setMaxSpeed(13);
         }
@@ -81,6 +85,18 @@ public class Player extends Item{
     @Override
     public void tick() {
         
+        if (getX() < game.getWidth() / 4 + 40 && getColor() < 6 && getColor() > -1) {
+            setColor(-1);
+            setWidth(50);
+            
+        } else if (getX() > (game.getWidth() / 2 + game.getWidth()/4 - 50) && getColor() == 6) {
+            setColor(-1);
+            setWidth(50);
+
+        } else if (getX() > game.getWidth() / 4 + 40 && getX() < (game.getWidth() / 2 + game.getWidth()/4 - 50) && getColor() > 5) {
+            setWidth(50);
+            setColor(-1);
+        }
         
         
         
@@ -98,11 +114,12 @@ public class Player extends Item{
           if (getSpeedY() <= getMaxSpeed()) {
                 setSpeedY(getSpeedY() + 1);
            }
-        }
-        if (game.getKeyManager().down) {
+        } else if (game.getKeyManager().down) {
            if (getSpeedY() > 0) {
-                setSpeedY(getSpeedY() - 1);
+                setSpeedY(getSpeedY() - 2);
            }       
+        } else if (getSpeedY() > 0) {
+            setSpeedY(getSpeedY() - 1);
         }
 
         
@@ -126,10 +143,10 @@ public class Player extends Item{
 
     @Override
     public void render(Graphics g) {
-        if (getCar() == null) {
+        if (getColor() == -1) {
             g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
         } else {
-            g.drawImage(Car, getX(), getY(), 50, 90, null);
+            g.drawImage(Assets.car[getColor()], getX(), getY(), 50, 90, null);
         }
     }
 }

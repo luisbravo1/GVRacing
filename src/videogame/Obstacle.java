@@ -21,9 +21,11 @@ public class Obstacle extends Item{
     public Obstacle(int x, int y, int width, int height, int color, Game game) {
         super(x, y, width, height);
         this.game = game;
-        this.speed = 8;
+        this.speed = 6;
         this.color = color;
     }
+    
+    
 
     public int getSpeed() {
         return speed;
@@ -51,7 +53,20 @@ public class Obstacle extends Item{
     
     @Override
     public void tick() {
-        setY(getY() + speed);
+        if (getX() < game.getWidth() / 4 + 40) {
+            color = 6;
+            setWidth(50);
+            setY(getY() + (getSpeed() + game.getSpeed()));
+            
+        } else if (getX() > (game.getWidth() / 2 + game.getWidth()/4 - 50)) {
+            color = 5;
+            setWidth(100);
+            setY(getY() + (game.getSpeed()));
+
+        } else {
+            setWidth(50);
+            setY(getY() + (getSpeed() + game.getSpeed()));
+        }
        
         // reset x position if collision with walls
         if (getX() + 100 >= game.getWidth()) {
