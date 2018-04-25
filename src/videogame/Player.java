@@ -20,11 +20,21 @@ public class Player extends Item{
     private Game game;          // to use game
     private BufferedImage Car;       // to have a car 
     private int speedY;         // speed Y
+    private int maxSpeed;
     
     public Player(int x, int y, int width, int height, Game game) {
         super(x, y, width, height);
         this.game = game;
         this.speed = 1;
+        maxSpeed = 5;
+    }
+
+    public int getSpeedY() {
+        return speedY;
+    }
+
+    public void setSpeedY(int speedY) {
+        this.speedY = speedY;
     }
     
    
@@ -43,6 +53,19 @@ public class Player extends Item{
 
     public void setCar(BufferedImage Car) {
         this.Car = Car;
+        if (Car == null) {
+          setMaxSpeed(5);  
+        } else {
+          setMaxSpeed(13);
+        }
+    }
+
+    public int getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(int maxSpeed) {
+        this.maxSpeed = maxSpeed;
     }
     
     
@@ -69,16 +92,20 @@ public class Player extends Item{
           setX(getX() + 7);
         }
         
-        if (getCar() == null) {
             // moving player depending on keys <- ->
-           if (game.getKeyManager().up) {
-             setY(getY() - 7);
+        if (game.getKeyManager().up) {
+             //setY(getY() - 7);
+          if (getSpeedY() <= getMaxSpeed()) {
+                setSpeedY(getSpeedY() + 1);
            }
-           if (game.getKeyManager().down) {
-             setY(getY() + 7);
-           }
-
         }
+        if (game.getKeyManager().down) {
+           if (getSpeedY() > 0) {
+                setSpeedY(getSpeedY() - 1);
+           }       
+        }
+
+        
         
         // reset x position if collision with walls
         if (getX() + 100 >= game.getWidth()) {
