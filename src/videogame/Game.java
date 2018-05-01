@@ -6,13 +6,22 @@
 package videogame;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import javax.swing.Timer;
 
 /**
@@ -38,9 +47,18 @@ public class Game implements Runnable {
     private ParticleSystem explosions;       // to store explosions
     private Cinematic cinematic;
     
-    private int speed;
+    private int backgroundselec;    // to select a random background
     
-    private int BGpos;
+    private int speed;              // the global speed
+    
+    private int BGpos;              // to know the position of the background
+    
+    private int distance;           // to keep track of distance
+    private long timer;              // to keep track of time
+    private long startOfGame;       // save the time the game started
+    private long goal;              // max time in seconds
+    
+    private Font customFont;        // Custom font
 
     
     /**
@@ -57,6 +75,10 @@ public class Game implements Runnable {
         keyManager = new KeyManager();
         BGpos = 0;
         this.speed = 8;
+        distance = 5000;
+        timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        goal = 60;
     }
 
     public int getSpeed() {
@@ -137,7 +159,24 @@ public class Game implements Runnable {
         explosions = new ParticleSystem(Assets.explosion,this,100,100);
         
         cinematic = new Cinematic(Assets.intro,1);
- 
+        
+        backgroundselec = (int) (Math.random() * 4);
+        backgroundselec = 1;
+/* no jala
+        try {
+            //create the font to use. Specify the size!
+            InputStream myStream = new BufferedInputStream(new FileInputStream("/images/car_blue_1.png"));
+
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            //register the font
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, myStream));
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, myStream).deriveFont(12f);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch(FontFormatException e) {
+            e.printStackTrace();
+        }
+*/
     }
     
     @Override
@@ -169,6 +208,7 @@ public class Game implements Runnable {
                     tick();
                     
                 BGpos += getSpeed();
+                distance -= getSpeed() / 10;
                 if (BGpos > getHeight()) {
                     BGpos = 0;
                 }
@@ -195,6 +235,8 @@ public class Game implements Runnable {
         keyManager.tick();
         
         player.tick();
+        
+        timer = goal - (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - startOfGame);
         
         explosions.tick();
         
@@ -257,8 +299,8 @@ public class Game implements Runnable {
             g = bs.getDrawGraphics();
 
             
-            g.drawImage(Assets.background, 0, BGpos, width, height, null);
-            g.drawImage(Assets.background, 0, BGpos - getHeight(), width, height, null);
+            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos, width, height, null);
+            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos - getHeight(), width, height, null);
             player.render(g);
             
             // render enemies
@@ -269,7 +311,10 @@ public class Game implements Runnable {
             }
             explosions.render(g);
                        // cinematic.render(g);
-
+            g.setFont(customFont);
+            g.setColor(Color.BLACK);
+            g.drawString("" + timer, width/2 - 25,50);
+            g.drawString("Distance: " + distance + "m", 20, getHeight() - 20);
             bs.show();
             g.dispose();
         }
