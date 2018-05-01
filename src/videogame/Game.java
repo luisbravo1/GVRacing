@@ -36,6 +36,7 @@ public class Game implements Runnable {
     private ArrayList<Obstacle> obstacles;   // to store obstacles collection
     private ArrayList<Obstacle> background;     // to store background collection
     private ParticleSystem explosions;       // to store explosions
+    private Cinematic cinematic;
     
     private int speed;
     
@@ -134,6 +135,8 @@ public class Game implements Runnable {
         }
         
         explosions = new ParticleSystem(Assets.explosion,this,100,100);
+        
+        cinematic = new Cinematic(Assets.intro,1);
  
     }
     
@@ -161,18 +164,23 @@ public class Game implements Runnable {
             // if delta is positive we tick the game
             if (delta >= 1) {
                 // ticks only if the player has lives
+                // cinematic.isFinished()
                 if(!getKeyManager().isPause()) {
                     tick();
-                }
-                else {
-                    getKeyManager().tick();
-                }
-                
-                render();
+                    
                 BGpos += getSpeed();
                 if (BGpos > getHeight()) {
                     BGpos = 0;
                 }
+                }
+                else {
+                    getKeyManager().tick();
+                    //cinematic.startCinematic();
+                }
+                
+                render();
+                        
+
                 delta --;
             }
         }
@@ -248,9 +256,11 @@ public class Game implements Runnable {
         {
             g = bs.getDrawGraphics();
 
+            
             g.drawImage(Assets.background, 0, BGpos, width, height, null);
             g.drawImage(Assets.background, 0, BGpos - getHeight(), width, height, null);
             player.render(g);
+            
             // render enemies
             Iterator itr = obstacles.iterator();
             while (itr.hasNext()) {
@@ -258,7 +268,8 @@ public class Game implements Runnable {
                 obstacles.render(g);
             }
             explosions.render(g);
-            
+                       // cinematic.render(g);
+
             bs.show();
             g.dispose();
         }
