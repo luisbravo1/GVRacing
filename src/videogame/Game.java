@@ -45,7 +45,11 @@ public class Game implements Runnable {
     private ArrayList<Obstacle> obstacles;   // to store obstacles collection
     private ArrayList<Obstacle> background;     // to store background collection
     private ParticleSystem explosions;       // to store explosions
-    private Cinematic cinematic;
+
+    private Cinematic cinematic;          // Cinematic object
+
+    public SoundClip crash;        // to store crash sounds
+
     
     private int backgroundselec;    // to select a random background
     
@@ -75,10 +79,14 @@ public class Game implements Runnable {
         keyManager = new KeyManager();
         BGpos = 0;
         this.speed = 8;
+
         distance = 5000;
         timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         goal = 60;
+
+        crash = new SoundClip("/sound/crash.wav");
+
     }
 
     public int getSpeed() {

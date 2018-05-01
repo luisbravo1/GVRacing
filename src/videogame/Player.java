@@ -18,9 +18,10 @@ public class Player extends Item{
     private int direction;      // to set the direction
     private int speed;          // to set the speed
     private Game game;          // to use game
-    private int color;      // to get the type of car
+    private int color;          // to get the type of car
     private int speedY;         // speed Y
-    private int maxSpeed;
+    private int speedX;         // speed X
+    private int maxSpeed;       // to set speed of player
     
     public Player(int x, int y, int width, int height, Game game) {
         super(x, y, width, height);
@@ -28,6 +29,7 @@ public class Player extends Item{
         this.speed = 1;
         maxSpeed = 5;
         color = -1;
+        speedX = 7;
     }
 
     public int getSpeedY() {
@@ -37,9 +39,23 @@ public class Player extends Item{
     public void setSpeedY(int speedY) {
         this.speedY = speedY;
     }
-    
-   
 
+    /**
+     * Get speed on X axis
+     * @return int
+     */
+    public int getSpeedX() {
+        return speedX;
+    }
+
+    /**
+     * Set speed on X axis
+     * @param speedX 
+     */
+    public void setSpeedX(int speedX) {
+        this.speedX = speedX;
+    }
+    
     /**
      * To get direction
      * @return an <code>int</code> value determining direction
@@ -58,9 +74,18 @@ public class Player extends Item{
         if (color == -1) {
           setMaxSpeed(5);
           setSpeedY(2);
+          setSpeedX(7);
           game.getExplosions().SpawnParticle(getX(), getY());
+          game.crash.play();
+        } else if (color == 6) {
+            setMaxSpeed(9);
+            setSpeedX(5);
+        } else if (color == 4) {
+            setMaxSpeed(17);
+            setSpeedX(10);
         } else {
           setMaxSpeed(13);
+          setSpeedX(7);
         }
     }
 
@@ -102,10 +127,10 @@ public class Player extends Item{
         
         // moving player depending on keys <- ->
         if (game.getKeyManager().left) {
-          setX(getX() - 7);
+          setX(getX() - speedX);
         }
         if (game.getKeyManager().right) {
-          setX(getX() + 7);
+          setX(getX() + speedX);
         }
         
             // moving player depending on keys <- ->
