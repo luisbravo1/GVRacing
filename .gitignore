@@ -5,8 +5,4 @@ nbproject/private
 .DS_Store?
 *.class
 build/
-<<<<<<< LuisBranch
 dist/
-=======
-dist/
->>>>>>> master
