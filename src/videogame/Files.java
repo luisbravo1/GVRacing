@@ -25,60 +25,33 @@ public class Files {
         // define objects
         PrintWriter printWriter;
         FileWriter fileWriter;
-       /* try {
+        try {
             
         
             // creating file object
             printWriter = new PrintWriter(new FileWriter("data.txt"));
             // writing the game
-            printWriter.println("" + game.getPlayer().getX() + "," + 
-                    game.getPlayer().getY());
-            printWriter.println("" + game.getPoints());
-            printWriter.println("" + game.getEnemies().size());
-            for (Enemy enemy : game.getEnemies()) {
-                printWriter.println("" + enemy.getX() + "," + enemy.getY() + 
-                        "," + enemy.getHeight() + "," + enemy.getDirection() + "," + enemy.getCount());
-            }
-            // save instance of bullets
-            printWriter.println("" + game.getBullets().size());
-            for (Bullet bullet : game.getBullets()) {
-                printWriter.println("" + bullet.getX() + "," + bullet.getY() + 
-                        "," + bullet.getHeight());
-            }
-            
-            // save instance of enemies
-            printWriter.println("" + game.getBulletsEnemies().size());
-            for (BulletEnemy bullet : game.getBulletsEnemies()) {
-                 printWriter.println("" + bullet.getX() + "," + bullet.getY());
-            }
-            
-            
-            // Save instance of covers
-            printWriter.println("" + game.getCovers().size());
-            for (Cover cover : game.getCovers()) {
-                printWriter.println("" + cover.getX() + "," + cover.getY() + 
-                        "," + cover.getHealth());
-            }
+            printWriter.println(game.getLevel());
+           
             printWriter.close();
             
         } catch (IOException ioe) {
             System.out.println("Se te lleno el disco duro");
         }
-        */
+        
         
     }
     
     public static void loadFile(Game game) {
         BufferedReader bufferedReader;
-        /*
+        
         try {
             
             bufferedReader = new BufferedReader(new FileReader("data.txt"));
             String line = bufferedReader.readLine();
-            String[] tokens = line.split(",");
-            game.getPlayer().setX(Integer.parseInt(tokens[0]));
-            game.getPlayer().setY(Integer.parseInt(tokens[1]));
+            game.setLevel(Integer.parseInt(line));
             
+            /*
             line = bufferedReader.readLine();
             tokens = line.split(",");
             game.setPoints(Integer.parseInt(tokens[0]));
@@ -137,11 +110,12 @@ public class Files {
                cover.setHealth(health);
                game.getCovers().add(cover);
             }
+            */
             
         } catch (IOException ioe) {
            System.out.println("Juego no ha sido guardado " + ioe.toString());
         }
-*/
+
     }
     
 }

@@ -62,6 +62,8 @@ public class Game implements Runnable {
     private long startOfGame;       // save the time the game started
     private long goal;              // max time in seconds
     
+    private int level;              // level of the game
+    
     private Font customFont;        // Custom font
     
 
@@ -81,15 +83,25 @@ public class Game implements Runnable {
         BGpos = 0;
         this.speed = 8;
 
-        distance = 2000;
+        level = 0;
+        Files.loadFile(this);
+        distance = 2500 - (level * 200);
+        goal = 60 - (level * 5);
         timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-        goal = 60;
 
         crash = new SoundClip("/sound/crash.wav");
         ambience = new SoundClip("/sound/ambience.wav");
         backgroundselec = 1;
 
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public int getSpeed() {
@@ -250,6 +262,22 @@ public class Game implements Runnable {
         
         timer = goal - (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - startOfGame);
         
+        if (timer <= 0) {
+            timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+            startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+            goal = 60 - (level * 5);
+            distance = 2500 + (level * 200);
+        }
+        
+        if (distance <= 0) {
+            setLevel(getLevel() + 1);
+            Files.saveFile(this);
+            distance = 2500 + (level * 200);
+            timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+            startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+            goal = 60 - (level * 5);
+        }
+        
         explosions.tick();
         
         setSpeed(player.getSpeedY());
@@ -265,8 +293,8 @@ public class Game implements Runnable {
                     if (player.getColor() == -1) {
                         player.setColor(obstacles.getColor());
                         
-                        obstacles.setX(((int) (Math.random() * getWidth()/4 + 100)) + 400);
-                        obstacles.setY(-300);
+
+                        obstacles.respawn();
                         obstacles.setSpeed(6);
                         
                      }
@@ -280,11 +308,7 @@ public class Game implements Runnable {
             }
             // re set positions if getting out of the screen
             if (obstacles.getY() > 780) {
-                posX2 = ((int) (Math.random() * getWidth()));
-                obstacles.setX(posX2);
-                obstacles.setY(-300);
-                obstacles.setColor((int) (Math.random() * 4) + 1);
-                obstacles.setSpeed(6);
+                obstacles.respawn();
             }
         }
 
@@ -311,8 +335,8 @@ public class Game implements Runnable {
             g = bs.getDrawGraphics();
 
             
-            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos, width, height, null);
-            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos - getHeight(), width, height, null);
+            g.drawImage(Assets.backgrounds[level], 0, BGpos, width, height, null);
+            g.drawImage(Assets.backgrounds[level], 0, BGpos - getHeight(), width, height, null);
             player.render(g);
             
             // render enemies
