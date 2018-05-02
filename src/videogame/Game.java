@@ -56,7 +56,6 @@ public class Game implements Runnable {
     public SoundClip music;        // to store music
     public SoundClip door;         // to store door sound
     public SoundClip ambience;     // to store ambience sound
-
     
     private int backgroundselec;    // to select a background
     
@@ -197,7 +196,6 @@ public class Game implements Runnable {
         ambience.setLooping(true);
         ambience.play();
         
-        
        // cinematic = new Cinematic(Assets.intro,1);
         
 /* no jala
@@ -291,7 +289,6 @@ public class Game implements Runnable {
             startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
             goal = 60 - (level * 5);
         }
-        
 
         explosions.tick();
         
