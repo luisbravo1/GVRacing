@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
  * @author GoodVibesOnly
  */
 public class Assets {
-    public static BufferedImage background; // to store background image
+    public static BufferedImage backgrounds[]; // to store background image
     public static BufferedImage car[];     // to store the cars images
     public static BufferedImage player; // to store the player image
     public static BufferedImage explosion[]; // to store explosion
@@ -22,7 +22,11 @@ public class Assets {
      * initializing the images of the game
      */
     public static void init() {
-        background = ImageLoader.loadImage("/images/track.png");
+        backgrounds = new BufferedImage[4];
+        backgrounds[0] = ImageLoader.loadImage("/images/track.png");
+        backgrounds[1] = ImageLoader.loadImage("/images/Fondos/Fondo2.png");
+        backgrounds[2] = ImageLoader.loadImage("/images/Fondos/Fondo3.png");
+        backgrounds[3] = ImageLoader.loadImage("/images/Fondos/Fondo4.png");
         // Assign different cars available
         car = new BufferedImage[7];
         car[0] = ImageLoader.loadImage("/images/car_blue_1.png");
