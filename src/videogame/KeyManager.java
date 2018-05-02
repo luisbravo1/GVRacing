@@ -22,6 +22,9 @@ public class KeyManager implements KeyListener {
     public boolean pause;   // flag to pause the game
     public boolean start;   // flag to start the game
     public boolean exit;    // flat to exit the game
+    public boolean r;       // flag to restart the game
+    public boolean i;       // flag to show instructuions the game
+    public boolean n;       // flag to next level
 
     private boolean keys[];  // to store all the flags for every key
     
@@ -48,7 +51,7 @@ public class KeyManager implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         // set true to every key pressed
-        if(e.getKeyCode() != KeyEvent.VK_P) {
+        if(e.getKeyCode() != KeyEvent.VK_P && e.getKeyCode() != KeyEvent.VK_S && e.getKeyCode() != KeyEvent.VK_I) {
             keys[e.getKeyCode()] = true;
         }
         
@@ -60,7 +63,7 @@ public class KeyManager implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         // set false to every key released
-        if(e.getKeyCode() == KeyEvent.VK_P) {
+        if(e.getKeyCode() == KeyEvent.VK_P || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_I) {
             keys[e.getKeyCode()] = !keys[e.getKeyCode()];
         } else {
             keys[e.getKeyCode()] = false;
@@ -85,5 +88,8 @@ public class KeyManager implements KeyListener {
         pause = keys[KeyEvent.VK_P];
         start = keys[KeyEvent.VK_S];
         exit = keys[KeyEvent.VK_E];
+        r = keys[KeyEvent.VK_R];
+        i = keys[KeyEvent.VK_I];
+        n = keys[KeyEvent.VK_N];
     }
 }
