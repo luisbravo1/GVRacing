@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import static java.lang.System.exit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -40,10 +41,13 @@ public class Game implements Runnable {
     private Thread thread;          // thread to create the game
     private boolean running;        // to set the game
     private boolean started;        // to set the start
+    private boolean win;            // to check if the player has won the game
+    private boolean lose;           // to check if the time has run out
     private Player player;          // to use a player 
     private KeyManager keyManager;  // to manage the keyboard
     private ArrayList<Obstacle> obstacles;   // to store obstacles collection
-    private ArrayList<Obstacle> background;     // to store background collection
+    private ArrayList<Obstacle> background;  // to store background collection
+    private ArrayList<Obstacle> menu;        // to store menu collection
     private ParticleSystem explosions;       // to store explosions
 
    // private Cinematic cinematic;          // Cinematic object
@@ -51,7 +55,7 @@ public class Game implements Runnable {
     public SoundClip crash;        // to store crash sounds
     public SoundClip ambience;      // to store ambience
     
-    private int backgroundselec;    // to select a random background
+    private int backgroundselec;    // to select a background
     
     private int speed;              // the global speed
     
@@ -79,6 +83,8 @@ public class Game implements Runnable {
         this.width = width;
         this.height = height;
         running = false;
+        win = false;
+        lose = false;
         keyManager = new KeyManager();
         BGpos = 0;
         this.speed = 8;
@@ -87,6 +93,7 @@ public class Game implements Runnable {
         Files.loadFile(this);
         distance = 2500 - (level * 200);
         goal = 60 - (level * 5);
+
         timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
@@ -119,8 +126,6 @@ public class Game implements Runnable {
     public void setExplosions(ParticleSystem explosions) {
         this.explosions = explosions;
     }
-    
-    
 
     /**
      * To get the width of the game window
@@ -174,7 +179,7 @@ public class Game implements Runnable {
          
         // create the Array collection of cars
         obstacles = new ArrayList<Obstacle>();
-        // adding enemies to the collection
+        // adding cars to the collection
         for (int i = 1; i <= 6; i++) {
             posX = ((int) (Math.random() * (getWidth())));
             obstacles.add(new Obstacle(posX, 200*i-900, 50, 90, ((int) (Math.random() * 4) + 1), this));
@@ -200,7 +205,7 @@ public class Game implements Runnable {
         } catch(FontFormatException e) {
             e.printStackTrace();
         }
-*/
+        */
     }
     
     @Override
@@ -228,14 +233,14 @@ public class Game implements Runnable {
             if (delta >= 1) {
                 // ticks only if the player has lives
                 // cinematic.isFinished()
-                if(!getKeyManager().isPause()) {
+                if(getKeyManager().isPause()) {
                     tick();
                     
-                BGpos += getSpeed();
-                distance -= getSpeed() / 10;
-                if (BGpos > getHeight()) {
-                    BGpos = 0;
-                }
+                    BGpos += getSpeed();
+                    distance -= getSpeed() / 6;
+                    if (BGpos > getHeight()) {
+                        BGpos = 0;
+                    }
                 }
                 else {
                     getKeyManager().tick();
@@ -311,7 +316,13 @@ public class Game implements Runnable {
                 obstacles.respawn();
             }
         }
-
+        if (distance <= 0) {
+            win = true;
+        }
+        if (timer <= 0) {
+            lose = true;
+        }
+        
 
     }
     
@@ -331,13 +342,15 @@ public class Game implements Runnable {
             display.getCanvas().createBufferStrategy(3);
         }
         else
-        {
+        {   
+            
             g = bs.getDrawGraphics();
-
             
             g.drawImage(Assets.backgrounds[level], 0, BGpos, width, height, null);
             g.drawImage(Assets.backgrounds[level], 0, BGpos - getHeight(), width, height, null);
             player.render(g);
+            
+            
             
             // render enemies
             Iterator itr = obstacles.iterator();
@@ -346,13 +359,36 @@ public class Game implements Runnable {
                 obstacles.render(g);
             }
             explosions.render(g);
-                       // cinematic.render(g);
-            g.setFont(new Font("HELVETICA",Font.PLAIN,50));
+            // cinematic.render(g);
+            //g.setFont(customFont);
+            g.setFont(new Font("Verdana", Font.PLAIN, 14));
             g.setColor(Color.BLACK);
-            g.drawString("" + timer, width/2 - 25,50);
-            g.drawString("Distance: " + distance + "m", 20, getHeight() - 20);
+            g.drawString("Time left: " + timer, width/2 - 100, 50);
+            g.drawString("Distance: " + distance + "m", width/2 + 20, 50);
+            if (!getKeyManager().isPause() && !started) {
+                g.drawImage(Assets.menu[4], 0, 0, width, height, null); 
+            }
+            //NO SE QUITA A LA PRIMERA PRESIONADA
+            /*if (!getKeyManager().start) {
+                if (!started) {
+                    g.drawImage(Assets.menu[1], 0, 0, width, height, null);
+                    started = false;
+                    //getKeyManager().setPause(false);
+                }
+            }*/
+            if (win) {
+                g.drawImage(Assets.menu[5], 0, 0, width, height, null);
+            }
+            if (lose) {
+                g.drawImage(Assets.menu[3], 0, 0, width, height, null);
+            }
             bs.show();
             g.dispose();
+            
+            // To exit game
+            if (getKeyManager().exit) {
+                exit(0);
+            }
         }
        
     }

@@ -18,6 +18,7 @@ public class Assets {
     public static BufferedImage player; // to store the player image
     public static BufferedImage explosion[]; // to store explosion
     public static BufferedImage tree;       // to store skrt mark
+    public static BufferedImage menu[];         // to store the menu images
 
     /**
      * initializing the images of the game
@@ -28,6 +29,7 @@ public class Assets {
         backgrounds[1] = ImageLoader.loadImage("/images/Fondos/Fondo2.png");
         backgrounds[2] = ImageLoader.loadImage("/images/Fondos/Fondo3.png");
         backgrounds[3] = ImageLoader.loadImage("/images/Fondos/Fondo4.png");
+        
         // Assign different cars available
         car = new BufferedImage[8];
         car[0] = ImageLoader.loadImage("/images/dblue.png");
@@ -56,6 +58,15 @@ public class Assets {
         explosion[2] = ImageLoader.loadImage("/images/Explosion/explosion3.png");
         explosion[3] = ImageLoader.loadImage("/images/Explosion/explosion4.png");
         explosion[4] = ImageLoader.loadImage("/images/Explosion/explosion5.png");
+        
+        // Assign different menu screens
+        menu = new BufferedImage[6];
+        menu[0] = ImageLoader.loadImage("/images/menu/end.jpg");
+        menu[1] = ImageLoader.loadImage("/images/menu/inicio.jpg");
+        menu[2] = ImageLoader.loadImage("/images/menu/instructions.jpg");
+        menu[3] = ImageLoader.loadImage("/images/menu/loser.jpg");
+        menu[4] = ImageLoader.loadImage("/images/menu/pause.jpg");
+        menu[5] = ImageLoader.loadImage("/images/menu/winner.jpg");
         
         tree = ImageLoader.loadImage("/images/tree_small.png");
     }
