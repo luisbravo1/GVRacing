@@ -191,8 +191,8 @@ public class Game implements Runnable {
         
         Files.loadFile(this);
         backgroundselec = level % 4;
-        distance = 2500 - (level * 200);
-        goal = 60 - (level * 5);
+        distance = 1500 + (level * 200);
+        goal = 120 - (level * 10);
         // create the Array collection of cars
         obstacles = new ArrayList<Obstacle>();
         // adding cars to the collection
@@ -208,23 +208,6 @@ public class Game implements Runnable {
         ambience.setLooping(true);
         ambience.play();
         
-       // cinematic = new Cinematic(Assets.intro,1);
-        
-/* no jala
-        try {
-            //create the font to use. Specify the size!
-            InputStream myStream = new BufferedInputStream(new FileInputStream("/images/car_blue_1.png"));
-
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            //register the font
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, myStream));
-            Font customFont = Font.createFont(Font.TRUETYPE_FONT, myStream).deriveFont(12f);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch(FontFormatException e) {
-            e.printStackTrace();
-        }
-        */
     }
     
     @Override
@@ -287,6 +270,10 @@ public class Game implements Runnable {
         keyManager.tick();
         
         player.tick();
+        
+        if (getKeyManager().o) {
+            music.stop();
+        } 
         
         if (getKeyManager().r) {
           restart();
@@ -371,10 +358,10 @@ public class Game implements Runnable {
         level = 0;
         Files.loadFile(this);
         backgroundselec = level % 4;
-        distance = 2500 + (level * 200);
+        distance = 1500 + (level * 200);
         timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-         goal = 60 - (level * 5);
+         goal = 120 - (level * 10);
         
         Iterator itr = obstacles.iterator();
         int i = 0;
@@ -425,11 +412,13 @@ public class Game implements Runnable {
             explosions.render(g);
             // cinematic.render(g);
             //g.setFont(customFont);
-            g.setFont(new Font("Verdana", Font.PLAIN, 14));
+            g.setFont(new Font("HELVETICA", Font.BOLD, 25));
             g.setColor(Color.BLACK);
-            g.drawString("Time left: " + timer, width/2 - 100, 50);
-            g.drawString("Distance: " + distance + "m", width/2 + 20, 50);
-            g.drawString("Level: " + level, width/2 + 150, 50);
+            g.drawString("Time left: " + timer, 10,25);
+            
+            g.drawString("Level: " + (level + 1), width - 100, 25);
+            g.setFont(new Font("HELVETICA", Font.BOLD, 50));
+            g.drawString("" + distance + "m", width/2 - 60, 50);
             
             if (getKeyManager().isPause()) {
                 g.drawImage(Assets.menu[4], 0, 0, width, height, null); 

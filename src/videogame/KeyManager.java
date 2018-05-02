@@ -25,6 +25,7 @@ public class KeyManager implements KeyListener {
     public boolean r;       // flag to restart the game
     public boolean i;       // flag to show instructuions the game
     public boolean n;       // flag to next level
+    public boolean o;       // flag to mute the music
 
     private boolean keys[];  // to store all the flags for every key
     
@@ -91,5 +92,6 @@ public class KeyManager implements KeyListener {
         r = keys[KeyEvent.VK_R];
         i = keys[KeyEvent.VK_I];
         n = keys[KeyEvent.VK_N];
+        o = keys[KeyEvent.VK_O];
     }
 }
