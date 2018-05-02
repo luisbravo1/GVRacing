@@ -53,7 +53,9 @@ public class Game implements Runnable {
    // private Cinematic cinematic;          // Cinematic object
 
     public SoundClip crash;        // to store crash sounds
-    public SoundClip ambience;      // to store ambience
+    public SoundClip music;        // to store music
+    public SoundClip door;         // to store door sound
+    public SoundClip ambience;     // to store ambience sound
     
     private int backgroundselec;    // to select a background
     
@@ -89,19 +91,28 @@ public class Game implements Runnable {
         BGpos = 0;
         this.speed = 8;
 
-        level = 0;
-        Files.loadFile(this);
-        distance = 2500 - (level * 200);
-        goal = 60 - (level * 5);
+
 
         timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
         crash = new SoundClip("/sound/crash.wav");
+        music = new SoundClip("/sound/offlimits.wav");
+        door = new SoundClip("/sound/door.wav");
         ambience = new SoundClip("/sound/ambience.wav");
         backgroundselec = 1;
 
     }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+    
+    
 
     public int getLevel() {
         return level;
@@ -171,12 +182,17 @@ public class Game implements Runnable {
      * initializing the display window of the game
      */
     private void init() {
-         backgroundselec = (int) (Math.random() * 4);
-         display = new Display(title, getWidth(), getHeight());  
+
+        display = new Display(title, getWidth(), getHeight());  
          Assets.init();
          display.getJframe().addKeyListener(keyManager);
          player = new Player(getWidth()/2, getHeight() - 200, 40, 30, this);
-         
+        level = 0;
+        
+        Files.loadFile(this);
+        backgroundselec = level % 4;
+        distance = 1500 + (level * 200);
+        goal = 120 - (level * 10);
         // create the Array collection of cars
         obstacles = new ArrayList<Obstacle>();
         // adding cars to the collection
@@ -186,26 +202,12 @@ public class Game implements Runnable {
         }
         
         explosions = new ParticleSystem(Assets.explosion,this,100,100);
-        ambience.play();
-        ambience.setLooping(true);
-        
-       // cinematic = new Cinematic(Assets.intro,1);
-        
-/* no jala
-        try {
-            //create the font to use. Specify the size!
-            InputStream myStream = new BufferedInputStream(new FileInputStream("/images/car_blue_1.png"));
 
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            //register the font
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, myStream));
-            Font customFont = Font.createFont(Font.TRUETYPE_FONT, myStream).deriveFont(12f);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch(FontFormatException e) {
-            e.printStackTrace();
-        }
-        */
+        music.setLooping(true);
+        music.play();
+        ambience.setLooping(true);
+        ambience.play();
+        
     }
     
     @Override
@@ -233,7 +235,7 @@ public class Game implements Runnable {
             if (delta >= 1) {
                 // ticks only if the player has lives
                 // cinematic.isFinished()
-                if(getKeyManager().isPause()) {
+                if(!getKeyManager().isPause() && started) {
                     tick();
                     
                     BGpos += getSpeed();
@@ -244,6 +246,10 @@ public class Game implements Runnable {
                 }
                 else {
                     getKeyManager().tick();
+                    if (getKeyManager().r) {
+                        restart();
+                        
+                    }
                     //cinematic.startCinematic();
                 }
                 
@@ -265,9 +271,20 @@ public class Game implements Runnable {
         
         player.tick();
         
+        if (getKeyManager().o) {
+            music.stop();
+        } 
+        
+        if (getKeyManager().r) {
+          restart();
+                        
+        }
+        
         timer = goal - (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - startOfGame);
         
         if (timer <= 0) {
+            lose = true;
+            
             timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
             startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
             goal = 60 - (level * 5);
@@ -275,14 +292,19 @@ public class Game implements Runnable {
         }
         
         if (distance <= 0) {
-            setLevel(getLevel() + 1);
-            Files.saveFile(this);
-            distance = 2500 + (level * 200);
-            timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-            startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-            goal = 60 - (level * 5);
+                win = true;
+            if (getKeyManager().n) {
+                
+                setLevel(getLevel() + 1);
+                Files.saveFile(this);
+                
+                restart();
+                getKeyManager().setPause(true);
+            }
+            
+
         }
-        
+
         explosions.tick();
         
         setSpeed(player.getSpeedY());
@@ -296,6 +318,7 @@ public class Game implements Runnable {
                 obstacles.setSpeed(0);
                  if (keyManager.space) {
                     if (player.getColor() == -1) {
+                        door.play();
                         player.setColor(obstacles.getColor());
                         
 
@@ -326,6 +349,34 @@ public class Game implements Runnable {
 
     }
     
+    public void restart() {
+        //player = new Player(getWidth()/2, getHeight() - 200, 40, 30, this);
+        getPlayer().setX(getWidth()/2);
+        getPlayer().setY( getHeight() - 200);
+ 
+
+        level = 0;
+        Files.loadFile(this);
+        backgroundselec = level % 4;
+        distance = 1500 + (level * 200);
+        timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+         goal = 120 - (level * 10);
+        
+        Iterator itr = obstacles.iterator();
+        int i = 0;
+        while (itr.hasNext()) {
+            Obstacle obstacles = (Obstacle) itr.next();
+            obstacles.respawn();
+            i++;
+            
+        }
+        BGpos = 0;
+        lose = false;
+        win = false;
+        
+    }
+    
     /**
      * To render the game
      */
@@ -346,8 +397,8 @@ public class Game implements Runnable {
             
             g = bs.getDrawGraphics();
             
-            g.drawImage(Assets.backgrounds[level], 0, BGpos, width, height, null);
-            g.drawImage(Assets.backgrounds[level], 0, BGpos - getHeight(), width, height, null);
+            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos, width, height, null);
+            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos - getHeight(), width, height, null);
             player.render(g);
             
             
@@ -361,21 +412,44 @@ public class Game implements Runnable {
             explosions.render(g);
             // cinematic.render(g);
             //g.setFont(customFont);
-            g.setFont(new Font("Verdana", Font.PLAIN, 14));
+            g.setFont(new Font("HELVETICA", Font.BOLD, 25));
             g.setColor(Color.BLACK);
-            g.drawString("Time left: " + timer, width/2 - 100, 50);
-            g.drawString("Distance: " + distance + "m", width/2 + 20, 50);
-            if (!getKeyManager().isPause() && !started) {
+            g.drawString("Time left: " + timer, 10,25);
+            
+            g.drawString("Level: " + (level + 1), width - 100, 25);
+            g.setFont(new Font("HELVETICA", Font.BOLD, 50));
+            g.drawString("" + distance + "m", width/2 - 60, 50);
+            
+            if (getKeyManager().isPause()) {
                 g.drawImage(Assets.menu[4], 0, 0, width, height, null); 
-            }
+            }/*
             //NO SE QUITA A LA PRIMERA PRESIONADA
-            /*if (!getKeyManager().start) {
+            if (!getKeyManager().start) {
                 if (!started) {
-                    g.drawImage(Assets.menu[1], 0, 0, width, height, null);
+                    
                     started = false;
-                    //getKeyManager().setPause(false);
-                }
+                    getKeyManager().setPause(false);
+                } 
             }*/
+
+            
+            if (!started) {
+                g.drawImage(Assets.menu[1], 0, 0, width, height, null);
+            }
+            
+            if (getKeyManager().start) {
+                started = true;
+                
+            }
+            
+            if (getKeyManager().i) {
+                g.drawImage(Assets.menu[2], 0, 0, width, height, null);
+                //started = !started;
+                getKeyManager().setPause(true);
+            } else {
+                getKeyManager().setPause(false);
+            }
+            
             if (win) {
                 g.drawImage(Assets.menu[5], 0, 0, width, height, null);
             }

@@ -54,7 +54,7 @@ public class Obstacle extends Item{
     
     public void respawn() {
         setX(((int) (Math.random() * game.getWidth())));
-        setY(-300);
+        setY((int) (Math.random() * - 100) - 300);
         setColor((int) (Math.random() * 7) + 1);
         setSpeed(6);
         
