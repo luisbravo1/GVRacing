@@ -55,7 +55,7 @@ public class Game implements Runnable {
     public SoundClip crash;        // to store crash sounds
 
     
-    private int backgroundselect;    // to select a background
+    private int backgroundselec;    // to select a background
     
     private int speed;              // the global speed
     
@@ -92,6 +92,7 @@ public class Game implements Runnable {
         goal = 60;
 
         crash = new SoundClip("/sound/crash.wav");
+        //backgroundselec = 1;
 
     }
 
@@ -155,10 +156,11 @@ public class Game implements Runnable {
      * initializing the display window of the game
      */
     private void init() {
-        display = new Display(title, getWidth(), getHeight());  
-        Assets.init();
-        display.getJframe().addKeyListener(keyManager);
-        player = new Player(getWidth()/2, getHeight() - 200, 40, 30, this);
+         backgroundselec = (int) (Math.random() * 4);
+         display = new Display(title, getWidth(), getHeight());  
+         Assets.init();
+         display.getJframe().addKeyListener(keyManager);
+         player = new Player(getWidth()/2, getHeight() - 200, 40, 30, this);
          
         // create the Array collection of cars
         obstacles = new ArrayList<Obstacle>();
@@ -172,9 +174,7 @@ public class Game implements Runnable {
         
        // cinematic = new Cinematic(Assets.intro,1);
         
-        //backgroundselect = (int) (Math.random() * 4);
-        backgroundselect = 0;
-        /* no jala
+/* no jala
         try {
             //create the font to use. Specify the size!
             InputStream myStream = new BufferedInputStream(new FileInputStream("/images/car_blue_1.png"));
@@ -318,8 +318,8 @@ public class Game implements Runnable {
             
             g = bs.getDrawGraphics();
             
-            g.drawImage(Assets.backgrounds[backgroundselect], 0, BGpos, width, height, null);
-            g.drawImage(Assets.backgrounds[backgroundselect], 0, BGpos - getHeight(), width, height, null);
+            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos, width, height, null);
+            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos - getHeight(), width, height, null);
             player.render(g);
             
             
