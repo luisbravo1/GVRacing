@@ -18,21 +18,27 @@ public class KeyManager implements KeyListener {
     public boolean down;    // flag to move down the player
     public boolean left;    // flag to move left the player
     public boolean right;   // flag to move right the player
-    public boolean w;       // flag to move up the player
-    public boolean a;       // flag to move left the player
-    public boolean s;       // flag to move down the player
-    public boolean d;       // flag to move right the player
-    public boolean space;    // flag to space
+    public boolean space;   // flag to space
     public boolean pause;   // flag to pause the game
+    public boolean start;   // flag to start the game
+    public boolean exit;    // flat to exit the game
 
     private boolean keys[];  // to store all the flags for every key
     
-    public boolean isPause() {
-        return pause;
+    public boolean start() {
+        return start;
     }
     
     public KeyManager() {
         keys = new boolean[256];
+    }
+    
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+    
+    public boolean isPause() {
+        return pause;
     }
     
     @Override
@@ -42,9 +48,13 @@ public class KeyManager implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         // set true to every key pressed
-        if(e.getKeyCode() != KeyEvent.VK_P ) {
+        if(e.getKeyCode() != KeyEvent.VK_P) {
             keys[e.getKeyCode()] = true;
         }
+        
+        /*if(e.getKeyCode() != KeyEvent.VK_S) {
+            keys[e.getKeyCode()] = true;
+        }*/
     }
 
     @Override
@@ -55,6 +65,12 @@ public class KeyManager implements KeyListener {
         } else {
             keys[e.getKeyCode()] = false;
         }
+        
+        /*if(e.getKeyCode() == KeyEvent.VK_S) {
+            keys[e.getKeyCode()] = !keys[e.getKeyCode()];
+        } else {
+            keys[e.getKeyCode()] = false;
+        }*/
     }
     
     /**
@@ -65,11 +81,9 @@ public class KeyManager implements KeyListener {
         down = keys[KeyEvent.VK_DOWN];
         left = keys[KeyEvent.VK_LEFT];
         right = keys[KeyEvent.VK_RIGHT];
-        w = keys[KeyEvent.VK_W];
-        a = keys[KeyEvent.VK_A];
-        s = keys[KeyEvent.VK_S];
-        d = keys[KeyEvent.VK_D];
         space = keys[KeyEvent.VK_SPACE];
         pause = keys[KeyEvent.VK_P];
+        start = keys[KeyEvent.VK_S];
+        exit = keys[KeyEvent.VK_E];
     }
 }
