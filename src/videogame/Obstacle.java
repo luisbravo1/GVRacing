@@ -23,6 +23,7 @@ public class Obstacle extends Item{
         this.game = game;
         this.speed = 6;
         this.color = color;
+        checkColor();
     }
     
     
@@ -51,21 +52,41 @@ public class Obstacle extends Item{
         this.color = color;
     }
     
-    @Override
-    public void tick() {
+    public void respawn() {
+        setX(((int) (Math.random() * game.getWidth())));
+        setY(-300);
+        setColor((int) (Math.random() * 7) + 1);
+        setSpeed(6);
+        
+        checkColor();
+        
+    }
+    
+    private void checkColor() {
         if (getX() < game.getWidth() / 4 + 40) {
             color = 6;
-            setWidth(50);
-            setY(getY() + (getSpeed() + game.getSpeed()));
-            
+            setWidth(50);       
         } else if (getX() > (game.getWidth() / 2 + game.getWidth()/4 - 50)) {
             color = 5;
             setWidth(100);
-            setY(getY() + (game.getSpeed()));
-
+        } else if (color == 6 || color == 5) {
+            setColor((int) (Math.random() * 4) + 1);
+            setWidth(50);
         } else {
             setWidth(50);
+        }      
+    }
+    
+    @Override
+    public void tick() {
+        if (color == 5) {
+            setY(getY() + (game.getSpeed()));
+        } else if (color == 6) {
             setY(getY() + (getSpeed() + game.getSpeed()));
+        } else if (color == 7) {
+            setY(getY() + (game.getSpeed()));
+        } else {
+           setY(getY() + (getSpeed() + game.getSpeed()));
         }
        
         // reset x position if collision with walls

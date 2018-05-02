@@ -171,7 +171,7 @@ public class Player extends Item{
         if (getColor() == -1) {
             g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
         } else {
-            g.drawImage(Assets.car[getColor()], getX(), getY(), 50, 90, null);
+            g.drawImage(Assets.pcar[getColor()], getX(), getY(), 50, 90, null);
         }
     }
 }
