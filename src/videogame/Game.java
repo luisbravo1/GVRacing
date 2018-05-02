@@ -86,6 +86,7 @@ public class Game implements Runnable {
         goal = 60;
 
         crash = new SoundClip("/sound/crash.wav");
+        backgroundselec = 1;
 
     }
 
@@ -151,6 +152,7 @@ public class Game implements Runnable {
      * initializing the display window of the game
      */
     private void init() {
+         backgroundselec = (int) (Math.random() * 4);
          display = new Display(title, getWidth(), getHeight());  
          Assets.init();
          display.getJframe().addKeyListener(keyManager);
@@ -168,8 +170,6 @@ public class Game implements Runnable {
         
        // cinematic = new Cinematic(Assets.intro,1);
         
-        backgroundselec = (int) (Math.random() * 4);
-        backgroundselec = 1;
 /* no jala
         try {
             //create the font to use. Specify the size!
@@ -319,7 +319,7 @@ public class Game implements Runnable {
             }
             explosions.render(g);
                        // cinematic.render(g);
-            g.setFont(customFont);
+            g.setFont(new Font("HELVETICA",Font.PLAIN,50));
             g.setColor(Color.BLACK);
             g.drawString("" + timer, width/2 - 25,50);
             g.drawString("Distance: " + distance + "m", 20, getHeight() - 20);
