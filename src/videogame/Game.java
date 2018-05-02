@@ -49,7 +49,7 @@ public class Game implements Runnable {
    // private Cinematic cinematic;          // Cinematic object
 
     public SoundClip crash;        // to store crash sounds
-
+    public SoundClip ambience;      // to store ambience
     
     private int backgroundselec;    // to select a random background
     
@@ -63,6 +63,7 @@ public class Game implements Runnable {
     private long goal;              // max time in seconds
     
     private Font customFont;        // Custom font
+    
 
     
     /**
@@ -80,12 +81,13 @@ public class Game implements Runnable {
         BGpos = 0;
         this.speed = 8;
 
-        distance = 5000;
+        distance = 2000;
         timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         goal = 60;
 
         crash = new SoundClip("/sound/crash.wav");
+        ambience = new SoundClip("/sound/ambience.wav");
         backgroundselec = 1;
 
     }
@@ -167,6 +169,8 @@ public class Game implements Runnable {
         }
         
         explosions = new ParticleSystem(Assets.explosion,this,100,100);
+        ambience.play();
+        ambience.setLooping(true);
         
        // cinematic = new Cinematic(Assets.intro,1);
         
