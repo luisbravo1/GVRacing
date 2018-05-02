@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
  * @author GoodVibesOnly
  */
 public class Assets {
+
     public static BufferedImage backgrounds[]; // to store background image
     public static BufferedImage car[];     // to store the cars images
     public static BufferedImage pcar[];     // to store the cars images

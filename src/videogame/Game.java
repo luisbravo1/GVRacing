@@ -283,6 +283,7 @@ public class Game implements Runnable {
             goal = 60 - (level * 5);
         }
         
+
         explosions.tick();
         
         setSpeed(player.getSpeedY());
