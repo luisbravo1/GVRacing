@@ -89,10 +89,7 @@ public class Game implements Runnable {
         BGpos = 0;
         this.speed = 8;
 
-        level = 0;
-        Files.loadFile(this);
-        distance = 2500 - (level * 200);
-        goal = 60 - (level * 5);
+
 
         timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
@@ -102,6 +99,16 @@ public class Game implements Runnable {
         backgroundselec = 1;
 
     }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+    
+    
 
     public int getLevel() {
         return level;
@@ -171,12 +178,17 @@ public class Game implements Runnable {
      * initializing the display window of the game
      */
     private void init() {
-         backgroundselec = (int) (Math.random() * 4);
-         display = new Display(title, getWidth(), getHeight());  
+
+        display = new Display(title, getWidth(), getHeight());  
          Assets.init();
          display.getJframe().addKeyListener(keyManager);
          player = new Player(getWidth()/2, getHeight() - 200, 40, 30, this);
-         
+        level = 0;
+        
+        Files.loadFile(this);
+        backgroundselec = level % 4;
+        distance = 2500 - (level * 200);
+        goal = 60 - (level * 5);
         // create the Array collection of cars
         obstacles = new ArrayList<Obstacle>();
         // adding cars to the collection
@@ -233,7 +245,7 @@ public class Game implements Runnable {
             if (delta >= 1) {
                 // ticks only if the player has lives
                 // cinematic.isFinished()
-                if(getKeyManager().isPause()) {
+                if(!getKeyManager().isPause() && started) {
                     tick();
                     
                     BGpos += getSpeed();
@@ -244,6 +256,10 @@ public class Game implements Runnable {
                 }
                 else {
                     getKeyManager().tick();
+                    if (getKeyManager().r) {
+                        restart();
+                        
+                    }
                     //cinematic.startCinematic();
                 }
                 
@@ -265,9 +281,16 @@ public class Game implements Runnable {
         
         player.tick();
         
+        if (getKeyManager().r) {
+          restart();
+                        
+        }
+        
         timer = goal - (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - startOfGame);
         
         if (timer <= 0) {
+            lose = true;
+            
             timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
             startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
             goal = 60 - (level * 5);
@@ -275,12 +298,17 @@ public class Game implements Runnable {
         }
         
         if (distance <= 0) {
-            setLevel(getLevel() + 1);
-            Files.saveFile(this);
-            distance = 2500 + (level * 200);
-            timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-            startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-            goal = 60 - (level * 5);
+                win = true;
+            if (getKeyManager().n) {
+                
+                setLevel(getLevel() + 1);
+                Files.saveFile(this);
+                
+                restart();
+                getKeyManager().setPause(true);
+            }
+            
+
         }
         
 
@@ -327,6 +355,34 @@ public class Game implements Runnable {
 
     }
     
+    public void restart() {
+        //player = new Player(getWidth()/2, getHeight() - 200, 40, 30, this);
+        getPlayer().setX(getWidth()/2);
+        getPlayer().setY( getHeight() - 200);
+ 
+
+        level = 0;
+        Files.loadFile(this);
+        backgroundselec = level % 4;
+        distance = 2500 + (level * 200);
+        timer = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+         goal = 60 - (level * 5);
+        
+        Iterator itr = obstacles.iterator();
+        int i = 0;
+        while (itr.hasNext()) {
+            Obstacle obstacles = (Obstacle) itr.next();
+            obstacles.respawn();
+            i++;
+            
+        }
+        BGpos = 0;
+        lose = false;
+        win = false;
+        
+    }
+    
     /**
      * To render the game
      */
@@ -347,8 +403,8 @@ public class Game implements Runnable {
             
             g = bs.getDrawGraphics();
             
-            g.drawImage(Assets.backgrounds[level], 0, BGpos, width, height, null);
-            g.drawImage(Assets.backgrounds[level], 0, BGpos - getHeight(), width, height, null);
+            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos, width, height, null);
+            g.drawImage(Assets.backgrounds[backgroundselec], 0, BGpos - getHeight(), width, height, null);
             player.render(g);
             
             
@@ -366,17 +422,38 @@ public class Game implements Runnable {
             g.setColor(Color.BLACK);
             g.drawString("Time left: " + timer, width/2 - 100, 50);
             g.drawString("Distance: " + distance + "m", width/2 + 20, 50);
-            if (!getKeyManager().isPause() && !started) {
+            g.drawString("Level: " + level, width/2 + 150, 50);
+            
+            if (getKeyManager().isPause()) {
                 g.drawImage(Assets.menu[4], 0, 0, width, height, null); 
-            }
+            }/*
             //NO SE QUITA A LA PRIMERA PRESIONADA
-            /*if (!getKeyManager().start) {
+            if (!getKeyManager().start) {
                 if (!started) {
-                    g.drawImage(Assets.menu[1], 0, 0, width, height, null);
+                    
                     started = false;
-                    //getKeyManager().setPause(false);
-                }
+                    getKeyManager().setPause(false);
+                } 
             }*/
+
+            
+            if (!started) {
+                g.drawImage(Assets.menu[1], 0, 0, width, height, null);
+            }
+            
+            if (getKeyManager().start) {
+                started = true;
+                
+            }
+            
+            if (getKeyManager().i) {
+                g.drawImage(Assets.menu[2], 0, 0, width, height, null);
+                //started = !started;
+                getKeyManager().setPause(true);
+            } else {
+                getKeyManager().setPause(false);
+            }
+            
             if (win) {
                 g.drawImage(Assets.menu[5], 0, 0, width, height, null);
             }
