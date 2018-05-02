@@ -53,7 +53,9 @@ public class Game implements Runnable {
    // private Cinematic cinematic;          // Cinematic object
 
     public SoundClip crash;        // to store crash sounds
-    public SoundClip ambience;      // to store ambience
+    public SoundClip music;        // to store music
+    public SoundClip door;         // to store door sound
+    public SoundClip ambience;     // to store ambience sound
     
     private int backgroundselec;    // to select a background
     
@@ -98,6 +100,8 @@ public class Game implements Runnable {
         startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
         crash = new SoundClip("/sound/crash.wav");
+        music = new SoundClip("/sound/offlimits.wav");
+        door = new SoundClip("/sound/door.wav");
         ambience = new SoundClip("/sound/ambience.wav");
         backgroundselec = 1;
 
@@ -186,8 +190,11 @@ public class Game implements Runnable {
         }
         
         explosions = new ParticleSystem(Assets.explosion,this,100,100);
-        ambience.play();
+
+        music.setLooping(true);
+        music.play();
         ambience.setLooping(true);
+        ambience.play();
         
        // cinematic = new Cinematic(Assets.intro,1);
         
@@ -282,7 +289,6 @@ public class Game implements Runnable {
             startOfGame = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
             goal = 60 - (level * 5);
         }
-        
 
         explosions.tick();
         
@@ -297,6 +303,7 @@ public class Game implements Runnable {
                 obstacles.setSpeed(0);
                  if (keyManager.space) {
                     if (player.getColor() == -1) {
+                        door.play();
                         player.setColor(obstacles.getColor());
                         
 
