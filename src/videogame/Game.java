@@ -92,7 +92,7 @@ public class Game implements Runnable {
         goal = 60;
 
         crash = new SoundClip("/sound/crash.wav");
-        //backgroundselec = 1;
+        backgroundselec = 1;
 
     }
 
