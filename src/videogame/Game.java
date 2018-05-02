@@ -46,7 +46,7 @@ public class Game implements Runnable {
     private ArrayList<Obstacle> background;     // to store background collection
     private ParticleSystem explosions;       // to store explosions
 
-    private Cinematic cinematic;          // Cinematic object
+   // private Cinematic cinematic;          // Cinematic object
 
     public SoundClip crash;        // to store crash sounds
 
@@ -166,7 +166,7 @@ public class Game implements Runnable {
         
         explosions = new ParticleSystem(Assets.explosion,this,100,100);
         
-        cinematic = new Cinematic(Assets.intro,1);
+       // cinematic = new Cinematic(Assets.intro,1);
         
         backgroundselec = (int) (Math.random() * 4);
         backgroundselec = 1;
