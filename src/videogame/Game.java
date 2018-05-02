@@ -53,6 +53,8 @@ public class Game implements Runnable {
    // private Cinematic cinematic;          // Cinematic object
 
     public SoundClip crash;        // to store crash sounds
+    public SoundClip music;        // to store music
+    public SoundClip door;         // to store door sound
 
     
     private int backgroundselec;    // to select a background
@@ -92,6 +94,8 @@ public class Game implements Runnable {
         goal = 60;
 
         crash = new SoundClip("/sound/crash.wav");
+        music = new SoundClip("/sound/offlimits.wav");
+        door = new SoundClip("/sound/door.wav");
         backgroundselec = 1;
 
     }
@@ -171,7 +175,9 @@ public class Game implements Runnable {
         }
         
         explosions = new ParticleSystem(Assets.explosion,this,100,100);
-        
+        music.setLooping(true);
+        music.play();
+       
        // cinematic = new Cinematic(Assets.intro,1);
         
 /* no jala
@@ -264,6 +270,7 @@ public class Game implements Runnable {
                 obstacles.setSpeed(0);
                  if (keyManager.space) {
                     if (player.getColor() == -1) {
+                        door.play();
                         player.setColor(obstacles.getColor());
                         
                         obstacles.setX(((int) (Math.random() * getWidth()/4 + 100)) + 400);
